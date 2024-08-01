@@ -18,7 +18,9 @@ function makeEvent(event, config) {
         end: end_date,
         start_pos: start_pos,
         width: width,
-        dorm: event.dorm
+        dorm: event.dorm,
+        description: event.description,
+        location: event.location,
     };
 }
 
@@ -45,13 +47,18 @@ function makeSchedule(events, config) {
     return tracks;
 }
 
+function show(event) {
+    // add modal shower later
+    console.log(event);
+}
+
 Vue.component('events-track', {
     props: ['events', 'config'],
     template: `
     <div class="event-grid">
         <div v-for="event in events">
             <div class="event" v-bind:style="'left:'+event.start_pos+'px;width:'+event.width+'px'">
-                <div class="card" v-bind:style="'background-color:'+config['colors']['dorms'][event.dorm[0]]">
+                <div class="card" v-bind:style="'background-color:'+config['colors']['dorms'][event.dorm[0]]" @click="show(event)">
                     <b><p>{{ event.name }}</p></b>
                     <p>{{ event.start.toLocaleTimeString() }}-{{ event.end.toLocaleTimeString() }}</p>
                 </div>
