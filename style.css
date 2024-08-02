@@ -7,7 +7,8 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Space', sans-serif;
-    background-color: #f0f0f0;
+    background-color: #e0e0e0;
+    font-size: 10pt;
 }
 
 .nav-container {
@@ -18,6 +19,12 @@ html, body {
     width: 100%;
     overflow-x: auto;
     transform: rotateX(180deg);
+    scrollbar-color: #120995 transparent;
+    border-bottom: 1px solid #120995;
+}
+
+.main-container-inside {
+    transform: rotateX(180deg);
 }
 
 h1 {
@@ -27,30 +34,31 @@ h1 {
     color: #120995;
 }
 
-.events-schedule {
-    transform: rotateX(180deg);
-}
-
 .event-grid {
     position: relative;
-    height: 60px;
+    height: 50px;
+    background-image: linear-gradient(to right, #c9c9c9 1px, transparent 1px, transparent 98px);
+    background-size: 100px 1px;
+    width: calc(100px * 24 * 10);
 }
 
 .event {
     position: absolute;
     overflow: hidden;
-    height: 60px;
+    height: 50px;
 }
 
 .card {
     position: relative;
-    border-radius: 10px;
+    border-radius: 7px;
     padding: 5px;
     box-sizing: border-box;
     background-color: #120995;
     color: white;
-    border: 2px solid #f0f0f0;
+    border: 2px solid #e0e0e0;
     cursor: pointer;
+    box-shadow: 0 0 0 1px inset rgba(0, 0, 0, 0.2);
+    filter: saturate(1.4);
 }
 
 .card p {
@@ -58,6 +66,17 @@ h1 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+#timebar {
+    position: relative;
+    height: 20px;
+}
+
+.time {
+    position: absolute;
+    width: 100px;
+    color: #120995;
 }
 
 .modal {
@@ -106,6 +125,7 @@ input {
     border: none;
     margin-left: 20px;
     padding: 10px;
-    font-size: 12pt;
+    font-size: 10pt;
     font-family: 'Space';
+    border-radius: 7px;
 }
