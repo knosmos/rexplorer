@@ -9,6 +9,7 @@ html, body {
     font-family: 'Space', sans-serif;
     background-color: #e0e0e0;
     font-size: 10pt;
+    -webkit-font-smoothing: antialiased
 }
 
 .nav-container {
