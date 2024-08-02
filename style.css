@@ -10,11 +10,25 @@ html, body {
     background-color: #f0f0f0;
 }
 
+.nav-container {
+    margin-bottom: 10px;
+}
+
+.main-container {
+    width: 100%;
+    overflow-x: auto;
+    transform: rotateX(180deg);
+}
+
 h1 {
     margin: 20px;
     padding: 0;
     font-size: 24px;
     color: #120995;
+}
+
+.events-schedule {
+    transform: rotateX(180deg);
 }
 
 .event-grid {
@@ -53,6 +67,7 @@ h1 {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.112);
+    backdrop-filter: blur(0.1em);
 }
 
 .modal-content {
@@ -77,4 +92,20 @@ h1 {
     cursor: pointer;
     margin: 0px;
     line-height: 0.5;
+}
+
+.modal .tag {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 7px;
+    color: white;
+    margin-right: 10px;
+}
+
+input {
+    border: none;
+    margin-left: 20px;
+    padding: 10px;
+    font-size: 12pt;
+    font-family: 'Space';
 }
