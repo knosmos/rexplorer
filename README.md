@@ -6,7 +6,8 @@ Built with Vue.js, the MIT Dormcom REX API, and lots of janky code written at 1a
 ## Roadmap
 - [x] Basic timeline view
 - [x] Color coding by dorm
-- [ ] Popups with event details
+- [x] Popups with event details
+- [ ] Timeline grid
 - [ ] Filter by dorm
 - [ ] Filter by event type
 - [ ] Mobile friendliness

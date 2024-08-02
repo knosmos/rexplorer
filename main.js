@@ -47,10 +47,38 @@ function makeSchedule(events, config) {
     return tracks;
 }
 
+Vue.component('event-modal', {
+    props: ['event', 'visible'],
+    template: `
+    <div class="modal" v-if="visible">
+        <div class="modal-content">
+            <span class="close" @click="close">&times;</span>
+            <h2>{{ event.name }}</h2>
+            <p>{{ event.description }}</p>
+            <p>{{ event.location }}</p>
+            <p>{{ event.start.toLocaleTimeString() }}-{{ event.end.toLocaleTimeString() }}</p>
+        </div>
+    </div>`,
+    methods: {
+        close: function() {
+            this.visible = false;
+        }
+    }
+});
+
 function show(event) {
-    // add modal shower later
     console.log(event);
+    modal.event = event;
+    modal.visible = true;
 }
+
+let modal = new Vue({
+    el: '#modal',
+    data: {
+        visible: false,
+        event: {}
+    }
+})
 
 Vue.component('events-track', {
     props: ['events', 'config'],
