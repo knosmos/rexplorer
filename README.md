@@ -1,5 +1,5 @@
 # MIT Residence Exploration 2024 Timeline Viewer
-Deployment: [https://knosmos.github.io/rex-timeline](https://knosmos.github.io/rex-timeline)
+Deployment: [https://knosmos.github.io/rexplorer](https://knosmos.github.io/rexplorer)
 
 Definitely not created for a competition to see who could make the best timeline viewer. Built with Vue.js, the MIT Dormcom REX API, and lots of janky code written at 1am :)
 
