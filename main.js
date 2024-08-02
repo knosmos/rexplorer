@@ -1,7 +1,7 @@
 API = "https://rex.mit.edu/api.json";
-fetch(API).then(response => response.json()).then(data => {
-    console.log(data);
-});
+function timeStr(date) {
+    return date.toLocaleTimeString("en-us", {hour: "2-digit", minute: "2-digit"})
+}
 
 function makeEvent(event, config) {
     let name = event.name;
@@ -10,8 +10,8 @@ function makeEvent(event, config) {
     
     let rex_start = new Date(config.start) - 1000 * 60 * 60 * 12;
     let rex_end = new Date(config.end);
-    let start_pos = (start_date - rex_start) / (rex_end - rex_start) * 10000;
-    let width = (end_date - start_date) / (rex_end - rex_start) * 10000;
+    let start_pos = (start_date - rex_start) / (1000 * 60 * 60) * 100;
+    let width = (end_date - start_date) / (1000 * 60 * 60) * 100;
     return {
         name: name,
         start: start_date,
@@ -61,7 +61,7 @@ Vue.component('event-modal', {
             <h2>{{ event.name }}</h2>
             <p>{{ event.description }}</p>
             <p>{{ event.location }}</p>
-            <p>{{ event.start.toLocaleTimeString() }}-{{ event.end.toLocaleTimeString() }}</p>
+            <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
             <p v-bind:style="'color:'+schedule.config['colors']['dorms'][event.dorm[0]]">{{ event.dorm[0] }}</p>
             <div>
                 <div v-for="tag in event.tags" class="tag" :style="'background-color:'+schedule.config['colors']['tags'][tag]">{{ tag }}</div>
@@ -95,9 +95,9 @@ Vue.component('events-track', {
     <div class="event-grid">
         <div v-for="event in events">
             <div class="event" v-bind:style="'left:'+event.start_pos+'px;width:'+event.width+'px'">
-                <div class="card" v-bind:style="'background-color:'+config['colors']['dorms'][event.dorm[0]]" @click="show(event)">
+                <div class="card" v-bind:style="'background-color:'+config['colors']['dorms'][event.dorm[0]]" @click="show(event)" :style="'color:'+(event.dorm[0].includes('New') ? 'black':'white')">
                     <b><p>{{ event.name }}</p></b>
-                    <p>{{ event.start.toLocaleTimeString() }}-{{ event.end.toLocaleTimeString() }}</p>
+                    <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
                 </div>
             </div>
         </div>
@@ -127,6 +127,7 @@ let schedule = new Vue({
             this.tracks = makeSchedule(this.events_all);
             console.log(this.tracks);
             console.log(this.config);
+            timebar.make();
         });
     },
 });
@@ -145,3 +146,34 @@ function update(e) {
     }
     schedule.tracks = makeSchedule(filtered, schedule.config);
 }
+
+Vue.component('time-bar', {
+    props: ['times'],
+    template: `
+    <div class=time-bar>
+        <div v-for="time in times" :style="'left:'+time.pos+'px'" class=time>
+            {{ time.text }}
+        </div>
+    </div>
+    `
+})
+
+let timebar = new Vue({
+    el: "#timebar",
+    data: {
+        times:[],
+    },
+    methods: {
+        make: function() {
+            let rex_start = new Date(schedule.config.start) - 1000 * 60 * 60 * 12;
+            let rex_end = new Date(schedule.config.end).getTime() + 1000 * 60 * 60 * 150;
+            for (let i=rex_start; i<rex_end; i+=1000*60*60) {
+                this.times.push({
+                    "text": timeStr(new Date(i)),
+                    "pos" : (i - rex_start) / (1000 * 60 * 60) * 100
+                });
+                console.log(this.times);
+            }            
+        }
+    }
+})
