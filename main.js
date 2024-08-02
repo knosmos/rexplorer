@@ -21,15 +21,20 @@ function makeEvent(event, config) {
         dorm: event.dorm,
         description: event.description,
         location: event.location,
+        tags: event.tags
     };
 }
 
-function makeSchedule(events, config) {
-    let tracks = []; // non overlapping events
+function makeEventObjects(events, config) {
     let event_objects = [];
     for (let e of events) {
         event_objects.push(makeEvent(e, config));
     }
+    return event_objects;
+}
+
+function makeSchedule(event_objects) {
+    let tracks = []; // non overlapping events
     event_objects.sort((a, b) => a.start - b.start);
     for (let event of event_objects) {
         let added = false;
@@ -57,6 +62,10 @@ Vue.component('event-modal', {
             <p>{{ event.description }}</p>
             <p>{{ event.location }}</p>
             <p>{{ event.start.toLocaleTimeString() }}-{{ event.end.toLocaleTimeString() }}</p>
+            <p v-bind:style="'color:'+schedule.config['colors']['dorms'][event.dorm[0]]">{{ event.dorm[0] }}</p>
+            <div>
+                <div v-for="tag in event.tags" class="tag" :style="'background-color:'+schedule.config['colors']['tags'][tag]">{{ tag }}</div>
+            </div>
         </div>
     </div>`,
     methods: {
@@ -105,7 +114,7 @@ Vue.component('events-schedule', {
     </div>`
 });
 
-new Vue({
+let schedule = new Vue({
     el: '#app',
     data: {
         tracks: [],
@@ -114,9 +123,25 @@ new Vue({
     mounted() {
         fetch(API).then(response => response.json()).then(data => {
             this.config = data;
-            this.tracks = makeSchedule(data.events, data);
+            this.events_all = makeEventObjects(data.events, this.config);
+            this.tracks = makeSchedule(this.events_all);
             console.log(this.tracks);
             console.log(this.config);
         });
     },
 });
+
+new Vue({
+    el: '#search'
+});
+
+function update(e) {
+    let text = e.target.value;
+    let filtered = [];
+    for (let event of schedule.events_all) {
+        if (JSON.stringify(event).toLowerCase().includes(text)) {
+            filtered.push(event);
+        }
+    }
+    schedule.tracks = makeSchedule(filtered, schedule.config);
+}
