@@ -12,7 +12,10 @@
         <input id="search" @input="update" placeholder="search">        
     </div>
     <div class="main-container">
-        <events-schedule id="app" v-bind:tracks="tracks" v-bind:config="config"></events-schedule>   
+        <div class="main-container-inside">
+            <time-bar id="timebar" v-bind:times="times"></time-bar>
+            <events-schedule id="app" v-bind:tracks="tracks" v-bind:config="config"></events-schedule>   
+        </div>
     </div>
     <event-modal id="modal" v-bind:event="event" v-bind:visible="visible"></event-modal>  
     <script src="main.js"></script>
