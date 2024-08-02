@@ -136,7 +136,7 @@ new Vue({
 });
 
 function update(e) {
-    let text = e.target.value;
+    let text = e.target.value.toLowerCase();
     let filtered = [];
     for (let event of schedule.events_all) {
         if (JSON.stringify(event).toLowerCase().includes(text)) {
