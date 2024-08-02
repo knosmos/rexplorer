@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home</title>
+    <title>REX 2024 Timeline</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
-    <h1>REX 2024 Timeline</h1>
-    <events-schedule id="app" v-bind:tracks="tracks" v-bind:config="config"></events-schedule>
-    <event-modal id="modal" v-bind:event="event" v-bind:visible="visible"></event-modal>
+    <div class="nav-container">
+        <h1>REX 2024 Timeline</h1>
+        <input id="search" @input="update" placeholder="search">        
+    </div>
+    <div class="main-container">
+        <events-schedule id="app" v-bind:tracks="tracks" v-bind:config="config"></events-schedule>   
+    </div>
+    <event-modal id="modal" v-bind:event="event" v-bind:visible="visible"></event-modal>  
     <script src="main.js"></script>
 </body>
 </html>
