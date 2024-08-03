@@ -71,13 +71,14 @@ Vue.component('event-modal', {
     methods: {
         close: function() {
             this.visible = false;
+            alert("closing!");
         }
     }
 });
 
 function show(event) {
     console.log(event);
-    alert(event);
+    alert(JSON.stringify(event));
     modal.event = event;
     modal.visible = true;
 }
