@@ -1,4 +1,7 @@
 API = "https://rex.mit.edu/api.json";
+
+let starred = [];
+
 function timeStr(date) {
     return date.toLocaleTimeString("en-us", {hour: "2-digit", minute: "2-digit"})
 }
@@ -66,6 +69,7 @@ Vue.component('event-modal', {
             <div>
                 <div v-for="tag in event.tags" class="tag" :style="'background-color:'+schedule.config['colors']['tags'][tag]">{{ tag }}</div>
             </div>
+            <p style="color:#3164b0" @click=toggleStar(event)>{{ isStarred(event) ? "[remove star]" : "[star this event]" }}</p>
         </div>
     </div>`,
     methods: {
@@ -148,6 +152,21 @@ function update(e) {
     schedule.tracks = makeSchedule(filtered, schedule.config);
 }
 
+function isStarred(event) {
+    let s = JSON.stringify(event);
+    return starred.includes(s);
+}
+
+function toggleStar(event) {
+    let s = JSON.stringify(event);
+    if (isStarred(event)) {
+        starred.splice(starred.indexOf(s), 1);
+    }
+    else {
+        starred.push(s);
+    }
+}
+
 Vue.component('time-bar', {
     props: ['times'],
     template: `
@@ -157,7 +176,7 @@ Vue.component('time-bar', {
         </div>
     </div>
     `
-})
+});
 
 let timebar = new Vue({
     el: "#timebar",
@@ -177,7 +196,7 @@ let timebar = new Vue({
             }            
         }
     }
-})
+});
 
 window.onerror = function(msg, url, linenumber) {
     alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
