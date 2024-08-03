@@ -2,7 +2,7 @@ API = "https://rex.mit.edu/api.json";
 
 let starred = [];
 if ("starred" in localStorage) {
-    starred = JSON.parse(localStorage.getItem("starred");
+    starred = JSON.parse(localStorage.getItem("starred"));
 }
 
 function timeStr(date) {
@@ -161,7 +161,7 @@ function update(e) {
 
 function updateStarred(e) {
     showStarred = e.target.checked;
-    alert(showStarred);
+    // alert(showStarred);
     let filtered = filterSearch(schedule.events_all);
     if (showStarred) { filtered = filterStarred(filtered); }
     schedule.tracks = makeSchedule(filtered, schedule.config);
