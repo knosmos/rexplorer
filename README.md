@@ -9,6 +9,7 @@ Definitely not created for a competition to see who could make the best timeline
 - [x] Popups with event details
 - [x] Timeline 
 - [x] Search
-- [ ] Filter by dorm
-- [ ] Filter by event type
-- [ ] Mobile friendliness
+- [x] Mobile friendliness
+- [x] Zoom
+- [ ] Event saving
+- [ ] AI powered Search

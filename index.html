@@ -3,22 +3,26 @@
 <head>
     <title>REX 2024 Timeline</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="static/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
     <div class="nav-container">
-        <h1>REX 2024 Timeline</h1>
-        <input id="search" @input="update" placeholder="search anything">        
+        <h1>REX 2024 Timeline <span style="color:#b0b0b0">[by @knosmos]</span></h1>
+        <input id="search" type=text @input="updateSearch" placeholder="search by anything">        
         <label for="starred"><input type=checkbox name="starred" @change="updateStarred" id="starred"> show only starred</label>
+        <!--<label for="ai-search"><input type=checkbox name="ai-search" @change="searchByAI" id="ai-search"> search with AI</label>-->
+        <span id="zoom-control">
+            zoom <button @click="zoomIn" id="zoom-in">+</button> <button @click="zoomOut" id="zoom-out">-</button>
+        </span>
     </div>
     <div class="main-container">
         <div class="main-container-inside">
-            <time-bar id="timebar" v-bind:times="times"></time-bar>
-            <events-schedule id="app" v-bind:tracks="tracks" v-bind:config="config"></events-schedule>   
+            <time-bar id="timebar" :times="times" :zoom="zoom"></time-bar>
+            <events-schedule id="app" :tracks="tracks" :config="config" :zoom="zoom"></events-schedule>   
         </div>
     </div>
-    <event-modal id="modal" v-bind:event="event" v-bind:visible="visible"></event-modal>  
+    <event-modal id="modal" v-bind:event="event" v-bind:visible="visible" v-bind:starevent="starevent"></event-modal>  
     <script src="main.js"></script>
 </body>
 </html>

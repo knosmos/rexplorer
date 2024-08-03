@@ -31,15 +31,22 @@ html, body {
 h1 {
     margin: 20px;
     padding: 0;
-    font-size: 24px;
+    font-size: 20px;
     color: #120995;
+    font-weight: lighter;
+}
+
+h2 {
+    margin: 0px;
+    font-size: 20px;
+    color: #120995;
+    font-weight: lighter;
 }
 
 .event-grid {
     position: relative;
     height: 50px;
     background-image: linear-gradient(to right, #c9c9c9 1px, transparent 1px, transparent 98px);
-    background-size: 100px 1px;
     width: calc(100px * 24 * 10);
 }
 
@@ -129,4 +136,40 @@ input {
     font-size: 10pt;
     font-family: 'Space';
     border-radius: 7px;
+}
+
+@media screen and (max-width: 600px) {
+    input[type=text] {
+        width: calc(100% - 70px);
+        display: block;
+        margin-bottom: 10px;
+    }
+}
+
+.star-button {
+    color: #d213b6;
+    cursor: pointer;
+}
+
+[type="checkbox"] {
+    vertical-align: middle;
+}
+
+label {
+    color: #120995;
+}
+
+#zoom-control {
+    margin-left: 20px;
+    color: #120995;
+}
+
+#zoom-control button {
+    border: 1px solid #120995;
+    cursor: pointer;
+    background-color: transparent;
+    color: #120995;
+    font-family: monospace;
+    font-size: 12pt;
+    margin: 0px;
 }

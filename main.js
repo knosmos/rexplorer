@@ -59,7 +59,7 @@ function makeSchedule(event_objects) {
 }
 
 Vue.component('event-modal', {
-    props: ['event', 'visible'],
+    props: ['event', 'visible', 'starevent'],
     template: `
     <div class="modal" v-if="visible">
         <div class="modal-content">
@@ -72,7 +72,8 @@ Vue.component('event-modal', {
             <div>
                 <div v-for="tag in event.tags" class="tag" :style="'background-color:'+schedule.config['colors']['tags'][tag]">{{ tag }}</div>
             </div>
-            <p style="color:#3164b0" @click=toggleStar(event)>{{ isStarred(event) ? "[remove star]" : "[star this event]" }}</p>
+            <p class="star-button" @click=toggleStar(event) v-if="starevent">[remove star]</p>
+            <p class="star-button" @click=toggleStar(event) v-if="!starevent">[add star]</p>
         </div>
     </div>`,
     methods: {
@@ -86,6 +87,7 @@ function show(event) {
     console.log(event);
     modal.event = event;
     modal.visible = true;
+    modal.starevent = isStarred(event);
     modal.$forceUpdate();
 }
 
@@ -94,16 +96,16 @@ let modal = new Vue({
     data: {
         visible: false,
         event: {},
-        starred: false
+        starevent: false
     }
 })
 
 Vue.component('events-track', {
-    props: ['events', 'config'],
+    props: ['events', 'config', 'zoom'],
     template: `
-    <div class="event-grid">
+    <div class="event-grid" :style="'background-size:'+100*zoom+'px'">
         <div v-for="event in events">
-            <div class="event" v-bind:style="'left:'+event.start_pos+'px;width:'+event.width+'px'">
+            <div class="event" v-bind:style="'left:'+event.start_pos*zoom+'px;width:'+event.width*zoom+'px'">
                 <div class="card" v-bind:style="'background-color:'+config['colors']['dorms'][event.dorm[0]]" @click="show(event)" :style="'color:'+(event.dorm[0].includes('New') ? 'black':'white')">
                     <p>{{ event.name }}</p>
                     <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
@@ -114,11 +116,11 @@ Vue.component('events-track', {
 });
 
 Vue.component('events-schedule', {
-    props: ['tracks', 'config'],
+    props: ['tracks', 'config', 'zoom'],
     template: `
     <div class="events-schedule">
         <div v-for="track in tracks">
-            <events-track :events="track" :config="config"></events-track>
+            <events-track :events="track" :config="config" :zoom="zoom"></events-track>
         </div>
     </div>`
 });
@@ -127,7 +129,8 @@ let schedule = new Vue({
     el: '#app',
     data: {
         tracks: [],
-        config: {}
+        config: {},
+        zoom: 1
     },
     mounted() {
         fetch(API).then(response => response.json()).then(data => {
@@ -152,19 +155,20 @@ new Vue({
 let showStarred = false;
 let searchString = "";
 
-function update(e) {
-    searchString = e.target.value.toLowerCase();
+function update() {
     let filtered = filterSearch(schedule.events_all);
     if (showStarred) { filtered = filterStarred(filtered); }
     schedule.tracks = makeSchedule(filtered, schedule.config);
 }
 
+function updateSearch(e) {
+    searchString = e.target.value.toLowerCase();
+    update();
+}
+
 function updateStarred(e) {
     showStarred = e.target.checked;
-    // alert(showStarred);
-    let filtered = filterSearch(schedule.events_all);
-    if (showStarred) { filtered = filterStarred(filtered); }
-    schedule.tracks = makeSchedule(filtered, schedule.config);
+    update();
 }
 
 function filterSearch(events) {
@@ -186,11 +190,11 @@ function toggleStar(event) {
     let s = JSON.stringify(event);
     if (isStarred(event)) {
         starred.splice(starred.indexOf(s), 1);
-        modal.starred = false;
+        modal.starevent = false;
     }
     else {
         starred.push(s);
-        modal.starred = true;
+        modal.starevent = true;
     }
     localStorage.setItem("starred", JSON.stringify(starred));
     modal.$forceUpdate();
@@ -207,10 +211,10 @@ function filterStarred(events) {
 }
 
 Vue.component('time-bar', {
-    props: ['times'],
+    props: ['times', 'zoom'],
     template: `
     <div class=time-bar>
-        <div v-for="time in times" :style="'left:'+time.pos+'px'" class=time>
+        <div v-for="time in times" :style="'left:'+time.pos*zoom+'px'" class=time>
             {{ time.text }}
         </div>
     </div>
@@ -221,6 +225,7 @@ let timebar = new Vue({
     el: "#timebar",
     data: {
         times:[],
+        zoom:1,
     },
     methods: {
         make: function() {
@@ -233,6 +238,28 @@ let timebar = new Vue({
                 });
                 console.log(this.times);
             }            
+        }
+    }
+});
+
+new Vue({
+    el: "#zoom-in",
+    methods: {
+        zoomIn: function() {
+            schedule.zoom *= 1.1;
+            timebar.zoom *= 1.1;
+            schedule.$forceUpdate();
+            timebar.$forceUpdate();
+        },
+    }
+});
+
+new Vue({
+    el: "#zoom-out",
+    methods: {
+        zoomOut: function() {
+            schedule.zoom /= 1.1;
+            timebar.zoom /= 1.1;
         }
     }
 });
