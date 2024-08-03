@@ -177,3 +177,7 @@ let timebar = new Vue({
         }
     }
 })
+
+window.onerror = function(msg, url, linenumber) {
+    alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
+}
