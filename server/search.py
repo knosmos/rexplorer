@@ -11,7 +11,7 @@ except:
 def get_embeddings(events):
     embeddings = []
     for event in events:
-        embeddings.append(ml.embed_text(event["description"]))
+        embeddings.append(ml.embed_text(event["name"] + " " + event["description"]))
     return np.array(embeddings).T
 
 event_embeddings = get_embeddings(events)
