@@ -13,3 +13,11 @@ Next-gen AI-enhanced ~~Blockchain-integrated~~ calendar for MIT Residence Explor
 - [x] Zoom
 - [x] Event saving
 - [ ] AI powered search
+
+## Screenshots
+![image](https://github.com/user-attachments/assets/ec14c5d7-2abd-441d-8d67-0591bda8b658)
+![image](https://github.com/user-attachments/assets/821becb0-43cd-443d-afed-1cb2ddf2eaee)
+![image](https://github.com/user-attachments/assets/ad21dfd1-0f8a-43d8-9df6-8fbf6b709eca)
+
+## License
+MIT
