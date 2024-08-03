@@ -141,15 +141,31 @@ new Vue({
     el: '#search'
 });
 
+let showStarred = false;
+let searchString = "";
+
 function update(e) {
-    let text = e.target.value.toLowerCase();
+    searchString = e.target.value.toLowerCase();
+    let filtered = filterSearch(schedule.events.all);
+    if (showStarred) { filtered = filterStarred(filtered); }
+    schedule.tracks = makeSchedule(filtered, schedule.config);
+}
+
+function updateSearch(e) {
+    showStarred = e.target.checked;
+    let filtered = filterSearch(schedule.events.all);
+    if (showStarred) { filtered = filterStarred(filtered); }
+    schedule.tracks = makeSchedule(filtered, schedule.config);
+}
+
+function filterSearch(events) {
     let filtered = [];
-    for (let event of schedule.events_all) {
-        if (JSON.stringify(event).toLowerCase().includes(text)) {
+    for (let event of events) {
+        if (JSON.stringify(event).toLowerCase().includes(searchString)) {
             filtered.push(event);
         }
     }
-    schedule.tracks = makeSchedule(filtered, schedule.config);
+    return filtered;
 }
 
 function isStarred(event) {
@@ -165,6 +181,17 @@ function toggleStar(event) {
     else {
         starred.push(s);
     }
+    modal.$forceUpdate();
+}
+
+function filterStarred(events) {
+    let filtered = [];
+    for (let event of events) {
+        if (isStarred(event)) {
+            filtered.push(event);
+        }
+    }
+    return filtered;
 }
 
 Vue.component('time-bar', {
