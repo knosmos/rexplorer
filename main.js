@@ -77,6 +77,7 @@ Vue.component('event-modal', {
 
 function show(event) {
     console.log(event);
+    alert(event);
     modal.event = event;
     modal.visible = true;
 }
