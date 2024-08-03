@@ -81,6 +81,8 @@ function show(event) {
     alert(JSON.stringify(event));
     modal.event = event;
     modal.visible = true;
+    modal.$forceUpdate();
+    alert("updated");
 }
 
 let modal = new Vue({
