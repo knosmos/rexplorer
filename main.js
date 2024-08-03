@@ -71,18 +71,15 @@ Vue.component('event-modal', {
     methods: {
         close: function() {
             this.visible = false;
-            alert("closing!");
         }
     }
 });
 
 function show(event) {
     console.log(event);
-    alert(JSON.stringify(event));
     modal.event = event;
     modal.visible = true;
     modal.$forceUpdate();
-    alert("updated");
 }
 
 let modal = new Vue({
@@ -100,7 +97,7 @@ Vue.component('events-track', {
         <div v-for="event in events">
             <div class="event" v-bind:style="'left:'+event.start_pos+'px;width:'+event.width+'px'">
                 <div class="card" v-bind:style="'background-color:'+config['colors']['dorms'][event.dorm[0]]" @click="show(event)" :style="'color:'+(event.dorm[0].includes('New') ? 'black':'white')">
-                    <b><p>{{ event.name }}</p></b>
+                    <p>{{ event.name }}</p>
                     <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
                 </div>
             </div>
