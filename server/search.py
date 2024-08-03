@@ -1,5 +1,5 @@
 import json
-import ml
+import ml_hf as ml
 import numpy as np
 import requests
 
@@ -10,8 +10,11 @@ except:
 
 def get_embeddings(events):
     embeddings = []
+    texts = []
     for event in events:
-        embeddings.append(ml.embed_text(event["name"] + " " + event["description"]))
+        texts.append(event["name"] + " " + event["description"])
+    embeddings = ml.embed_texts(texts)
+    print("embeddings generated!")
     return np.array(embeddings).T
 
 event_embeddings = get_embeddings(events)

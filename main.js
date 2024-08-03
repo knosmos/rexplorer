@@ -1,6 +1,6 @@
 // UTILITY
 API = "https://rex.mit.edu/api.json";
-AI_API = "https://rexplorer.onrender.com";
+AI_API = "http://192.168.0.13:5000/";
 
 let starred = [];
 if ("starred" in localStorage) {
