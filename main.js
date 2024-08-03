@@ -1,6 +1,9 @@
 API = "https://rex.mit.edu/api.json";
 
 let starred = [];
+if ("starred" in localStorage) {
+    starred = JSON.parse(localStorage.getItem("starred");
+}
 
 function timeStr(date) {
     return date.toLocaleTimeString("en-us", {hour: "2-digit", minute: "2-digit"})
@@ -90,7 +93,8 @@ let modal = new Vue({
     el: '#modal',
     data: {
         visible: false,
-        event: {}
+        event: {},
+        starred: false
     }
 })
 
@@ -182,10 +186,13 @@ function toggleStar(event) {
     let s = JSON.stringify(event);
     if (isStarred(event)) {
         starred.splice(starred.indexOf(s), 1);
+        modal.starred = false;
     }
     else {
         starred.push(s);
+        modal.starred = true;
     }
+    localStorage.setItem("starred", JSON.stringify(starred));
     modal.$forceUpdate();
 }
 
