@@ -1,4 +1,6 @@
+// UTILITY
 API = "https://rex.mit.edu/api.json";
+AI_API = "https://rexplorer.onrender.com";
 
 let starred = [];
 if ("starred" in localStorage) {
@@ -8,6 +10,8 @@ if ("starred" in localStorage) {
 function timeStr(date) {
     return date.toLocaleTimeString("en-us", {hour: "2-digit", minute: "2-digit"})
 }
+
+// SCHEDULE
 
 function makeEvent(event, config) {
     let name = event.name;
@@ -58,11 +62,13 @@ function makeSchedule(event_objects) {
     return tracks;
 }
 
+// EVENT MODAL
+
 Vue.component('event-modal', {
     props: ['event', 'visible', 'starevent'],
     template: `
-    <div class="modal" v-if="visible">
-        <div class="modal-content">
+    <div class="modal" v-if="visible" @click="close">
+        <div class="modal-content" @click="blockClose">
             <span class="close" @click="close">&times;</span>
             <h2>{{ event.name }}</h2>
             <p>{{ event.description }}</p>
@@ -79,6 +85,9 @@ Vue.component('event-modal', {
     methods: {
         close: function() {
             this.visible = false;
+        },
+        blockClose: function(event) {
+            event.stopPropagation();
         }
     }
 });
@@ -143,6 +152,8 @@ let schedule = new Vue({
         });
     },
 });
+
+// SEARCH
 
 new Vue({
     el: '#search'
@@ -210,6 +221,8 @@ function filterStarred(events) {
     return filtered;
 }
 
+// TIME BAR
+
 Vue.component('time-bar', {
     props: ['times', 'zoom'],
     template: `
@@ -242,6 +255,8 @@ let timebar = new Vue({
     }
 });
 
+// ZOOM
+
 new Vue({
     el: "#zoom-in",
     methods: {
@@ -264,6 +279,78 @@ new Vue({
     }
 });
 
-window.onerror = function(msg, url, linenumber) {
-    alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
-}
+// AI
+
+Vue.component('ai-modal', {
+    props: ['visible', 'search_results'],
+    template: `
+    <div class="modal" v-if="visible" @click="close">
+        <div class="modal-content" @click="blockClose">
+            <span class="close" @click="close">&times;</span>
+            <h2>Search By AI</h2>
+            <br>
+            <input type=text placeholder="enter query" id=search-query>
+            <button @click="search">search</button>
+            <div>
+                <br>
+                <div class="card search-card" v-for="event in search_results" @click="show(event)">
+                    <p>{{ event.name }}</p>
+                    <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
+                    <p v-bind:style="'color:'+schedule.config['colors']['dorms'][event.dorm[0]]">{{ event.dorm[0] }}</p>
+                    <div>
+                        <div v-for="tag in event.tags" class="tag" :style="'background-color:'+schedule.config['colors']['tags'][tag]">{{ tag }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`,
+    methods: {
+        close: function() {
+            this.visible = false;
+        },
+        blockClose: function(event) {
+            event.stopPropagation();
+        },
+        search: function() {
+            //this.search_results = schedule.events_all.slice(0, 5);
+            fetch(
+                AI_API + "/search",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    body: JSON.stringify({
+                        "query": document.getElementById("search-query").value
+                    })
+                }
+            ).then(response => response.json()).then(data => {
+                console.log(data);
+                this.search_results = [];
+                for (let e of data["results"]) {
+                    this.search_results.push(makeEvent(e, schedule.config));
+                }
+                this.$forceUpdate();
+            });
+        }
+    }
+});
+
+new Vue({
+    el: "#ai-button",
+    methods: {
+        showAIModal: function() {
+            ai.visible = true;
+            ai.$forceUpdate();
+        }
+    }
+});
+
+ai = new Vue({
+    el: "#ai",
+    data: {
+        visible: false,
+        search_results: []
+    },
+});

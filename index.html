@@ -11,10 +11,10 @@
         <h1>REX 2024 Timeline <span style="color:#b0b0b0">[by @knosmos]</span></h1>
         <input id="search" type=text @input="updateSearch" placeholder="search by anything">        
         <label for="starred"><input type=checkbox name="starred" @change="updateStarred" id="starred"> show only starred</label>
-        <!--<label for="ai-search"><input type=checkbox name="ai-search" @change="searchByAI" id="ai-search"> search with AI</label>-->
         <span id="zoom-control">
             zoom <button @click="zoomIn" id="zoom-in">+</button> <button @click="zoomOut" id="zoom-out">-</button>
         </span>
+        <button @click="showAIModal" id="ai-button">Search with AI</button>
     </div>
     <div class="main-container">
         <div class="main-container-inside">
@@ -22,7 +22,8 @@
             <events-schedule id="app" :tracks="tracks" :config="config" :zoom="zoom"></events-schedule>   
         </div>
     </div>
-    <event-modal id="modal" v-bind:event="event" v-bind:visible="visible" v-bind:starevent="starevent"></event-modal>  
+    <ai-modal id="ai" v-bind:visible="visible" v-bind:search_results="search_results"></ai-modal>
+    <event-modal id="modal" v-bind:event="event" v-bind:visible="visible" v-bind:starevent="starevent"></event-modal>
     <script src="main.js"></script>
 </body>
 </html>

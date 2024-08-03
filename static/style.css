@@ -165,11 +165,61 @@ label {
 }
 
 #zoom-control button {
+    font-family: monospace;
+    font-size: 12pt;
+}
+
+button {
     border: 1px solid #120995;
     cursor: pointer;
     background-color: transparent;
     color: #120995;
-    font-family: monospace;
-    font-size: 12pt;
+    font-size: 10pt;
     margin: 0px;
+    font-family: 'Space', sans-serif;
+    height: 20px;
+    vertical-align: middle;
+}
+
+button:hover {
+    background-color: #120995;
+    color: white;
+}
+
+#ai-button {
+    margin-left: 20px;
+}
+
+.modal input {
+    background-color: #e0e0e0;
+    margin-left: 0px;
+    padding: 10px;
+    font-size: 10pt;
+    font-family: 'Space';
+    border-radius: 7px;
+    width: calc(100% - 40px - 20%);
+}
+
+.modal button {
+    width: 19%;
+    vertical-align: middle;
+    height: 36px;
+    font-size: 10pt;
+    border-radius: 7px;
+    box-sizing: border-box;
+    float: right;
+}
+
+.search-card {
+    position: relative;
+    border-radius: 7px;
+    padding: 5px;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
+    color: #120995;
+    border: 1px solid #120995;
+    cursor: pointer;
+    box-shadow: none;
+    filter: saturate(1.4);
+    margin-bottom: 10px;
 }
