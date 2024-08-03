@@ -141,6 +141,10 @@ new Vue({
     el: '#search'
 });
 
+new Vue({
+    el: '#starred'
+});
+
 let showStarred = false;
 let searchString = "";
 
@@ -153,6 +157,7 @@ function update(e) {
 
 function updateStarred(e) {
     showStarred = e.target.checked;
+    alert(showStarred);
     let filtered = filterSearch(schedule.events_all);
     if (showStarred) { filtered = filterStarred(filtered); }
     schedule.tracks = makeSchedule(filtered, schedule.config);
