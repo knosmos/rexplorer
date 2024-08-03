@@ -147,11 +147,12 @@ let searchString = "";
 function update(e) {
     searchString = e.target.value.toLowerCase();
     let filtered = filterSearch(schedule.events.all);
+    alert(filtered);
     if (showStarred) { filtered = filterStarred(filtered); }
     schedule.tracks = makeSchedule(filtered, schedule.config);
 }
 
-function updateSearch(e) {
+function updateStarred(e) {
     showStarred = e.target.checked;
     let filtered = filterSearch(schedule.events.all);
     if (showStarred) { filtered = filterStarred(filtered); }
