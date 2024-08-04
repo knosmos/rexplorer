@@ -10,7 +10,10 @@
 </head>
 <body>
     <div class="nav-container">
-        <h1>REX 2024 Timeline <span style="color:#b0b0b0">[by @knosmos]</span></h1>
+        <h1>REX 2024 Timeline
+            <a style="color:#b0b0b0;text-decoration:none;" href="https://github.com/knosmos" id="byline">by @knosmos</a>
+            <a style="color:#b0b0b0;cursor:pointer;" @click="showAbout" id="about-button">[about]</a>
+        </h1>
         <input id="search" type=text @input="updateSearch" placeholder="search by anything">        
         <label for="starred"><input type=checkbox name="starred" @change="updateStarred" id="starred"> show only starred</label>
         <span id="zoom-control">
@@ -20,12 +23,61 @@
     </div>
     <div class="main-container">
         <div class="main-container-inside">
-            <time-bar id="timebar" :times="times" :zoom="zoom"></time-bar>
+            <div class="time-bar" id="timebar">
+                <div v-for="time in times" :style="'left:'+time.pos*zoom+'px'" class=time>
+                    {{ time.text }}
+                </div>
+            </div>
             <events-schedule id="app" :tracks="tracks" :config="config" :zoom="zoom"></events-schedule>   
         </div>
     </div>
-    <ai-modal id="ai" v-bind:visible="visible" v-bind:search_results="search_results"></ai-modal>
-    <event-modal id="modal" v-bind:event="event" v-bind:visible="visible" v-bind:starevent="starevent"></event-modal>
+    <modal id="ai" :visible="visible">
+        <h2>Search By AI</h2>
+        <br>
+        <input type=text placeholder="enter query" id=search-query>
+        <button @click="search">go</button>
+        <div class=ai-result-container>
+            <br>
+            <i v-if="processing">processing... the first query may take up to a minute as the AI server is starting up.</i>
+            <div class="card search-card" v-for="event in search_results" @click="show(event)">
+                <p>{{ event.name }}</p>
+                <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
+                <p v-bind:style="'color:'+schedule.config['colors']['dorms'][event.dorm[0]]">{{ event.dorm[0] }}</p>
+                <div>
+                    <div v-for="tag in event.tags" class="tag" :style="'background-color:'+schedule.config['colors']['tags'][tag]">{{ tag }}</div>
+                </div>
+            </div>
+        </div>
+    </modal>    
+    <modal id="event-modal" :visible="visible">
+        <h2>{{ event.name }}</h2>
+        <p>{{ event.description }}</p>
+        <p>{{ event.location }}</p>
+        <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
+        <p v-bind:style="'color:'+schedule.config['colors']['dorms'][event.dorm[0]]">{{ event.dorm[0] }}</p>
+        <div>
+            <div v-for="tag in event.tags" class="tag" :style="'background-color:'+schedule.config['colors']['tags'][tag]">{{ tag }}</div>
+        </div>
+        <p class="star-button" @click=toggleStar(event) v-if="starevent">[remove star]</p>
+        <p class="star-button" @click=toggleStar(event) v-if="!starevent">[add star]</p>
+    </modal>
+    <modal id="about" :visible="visible">
+        <h2>about</h2>
+        <p>REXplorer v0.43</p>
+        <p>by Jieruei Chang @knosmos</p>
+        <p>
+            Next-gen AI-enhanced <span style="text-decoration: line-through;">Blockchain-integrated calendar</span> for MIT Residence
+            Exploration 2024. Built with Vue.js, sentence-transformers, the MIT Dormcom REX API, and lots of janky code written at 1am.
+        </p>
+        <p>
+            Definitely not created for a competition to see who could make the best timeline viewer. For unrelated reasons, check out:
+            <ul>
+                <li><a href="https://emeraldblock.github.io/rex-event-xwhen/">Rex Event Xwhen</a> by emeraldblock</li>
+                <li><a href="https://scidev5.github.io/eventful/">EVENTFUL</a> by scidev</li>
+            </ul>
+        </p>
+        <p>source code: <a href="https://github.com/knosmos/rexplorer">github</a></p>
+    </modal>
     <script src="main.js"></script>
 </body>
 </html>

@@ -1,3 +1,50 @@
+// COMPONENTS
+
+Vue.component('events-track', {
+    props: ['events', 'config', 'zoom'],
+    template: `
+    <div class="event-grid" :style="'background-size:'+100*zoom+'px'">
+        <div v-for="event in events">
+            <div class="event" v-bind:style="'left:'+event.start_pos*zoom+'px;width:'+event.width*zoom+'px'">
+                <div class="card" v-bind:style="'background-color:'+config['colors']['dorms'][event.dorm[0]]" @click="show(event)" :style="'color:'+(event.dorm[0].includes('New') ? 'black':'white')">
+                    <p>{{ event.name }}</p>
+                    <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>`
+});
+
+Vue.component('events-schedule', {
+    props: ['tracks', 'config', 'zoom'],
+    template: `
+    <div class="events-schedule">
+        <div v-for="track in tracks">
+            <events-track :events="track" :config="config" :zoom="zoom"></events-track>
+        </div>
+    </div>`
+});
+
+Vue.component('modal', {
+    props: ['visible'],
+    template: `
+    <div id="ai" class="modal" v-if="visible" @click="close">
+        <div class="modal-content" @click="blockClose">
+            <span class="close" @click="close">&times;</span>
+            <slot></slot>
+        </div>
+    </div>
+    `,
+    methods: {
+        close: function() {
+            this.visible = false;
+        },
+        blockClose: function(event) {
+            event.stopPropagation();
+        }
+    }
+})
+
 // UTILITY
 API = "https://rex.mit.edu/api.json";
 AI_API = "https://rexplorer.onrender.com";
@@ -64,34 +111,6 @@ function makeSchedule(event_objects) {
 
 // EVENT MODAL
 
-Vue.component('event-modal', {
-    props: ['event', 'visible', 'starevent'],
-    template: `
-    <div class="modal" v-if="visible" @click="close">
-        <div class="modal-content" @click="blockClose">
-            <span class="close" @click="close">&times;</span>
-            <h2>{{ event.name }}</h2>
-            <p>{{ event.description }}</p>
-            <p>{{ event.location }}</p>
-            <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
-            <p v-bind:style="'color:'+schedule.config['colors']['dorms'][event.dorm[0]]">{{ event.dorm[0] }}</p>
-            <div>
-                <div v-for="tag in event.tags" class="tag" :style="'background-color:'+schedule.config['colors']['tags'][tag]">{{ tag }}</div>
-            </div>
-            <p class="star-button" @click=toggleStar(event) v-if="starevent">[remove star]</p>
-            <p class="star-button" @click=toggleStar(event) v-if="!starevent">[add star]</p>
-        </div>
-    </div>`,
-    methods: {
-        close: function() {
-            this.visible = false;
-        },
-        blockClose: function(event) {
-            event.stopPropagation();
-        }
-    }
-});
-
 function show(event) {
     console.log(event);
     modal.event = event;
@@ -101,38 +120,15 @@ function show(event) {
 }
 
 let modal = new Vue({
-    el: '#modal',
+    el: '#event-modal',
     data: {
         visible: false,
         event: {},
         starevent: false
-    }
+    },
 })
 
-Vue.component('events-track', {
-    props: ['events', 'config', 'zoom'],
-    template: `
-    <div class="event-grid" :style="'background-size:'+100*zoom+'px'">
-        <div v-for="event in events">
-            <div class="event" v-bind:style="'left:'+event.start_pos*zoom+'px;width:'+event.width*zoom+'px'">
-                <div class="card" v-bind:style="'background-color:'+config['colors']['dorms'][event.dorm[0]]" @click="show(event)" :style="'color:'+(event.dorm[0].includes('New') ? 'black':'white')">
-                    <p>{{ event.name }}</p>
-                    <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
-                </div>
-            </div>
-        </div>
-    </div>`
-});
-
-Vue.component('events-schedule', {
-    props: ['tracks', 'config', 'zoom'],
-    template: `
-    <div class="events-schedule">
-        <div v-for="track in tracks">
-            <events-track :events="track" :config="config" :zoom="zoom"></events-track>
-        </div>
-    </div>`
-});
+// SCHEDULE COMPONENTS
 
 let schedule = new Vue({
     el: '#app',
@@ -223,17 +219,6 @@ function filterStarred(events) {
 
 // TIME BAR
 
-Vue.component('time-bar', {
-    props: ['times', 'zoom'],
-    template: `
-    <div class=time-bar>
-        <div v-for="time in times" :style="'left:'+time.pos*zoom+'px'" class=time>
-            {{ time.text }}
-        </div>
-    </div>
-    `
-});
-
 let timebar = new Vue({
     el: "#timebar",
     data: {
@@ -281,62 +266,6 @@ new Vue({
 
 // AI
 
-Vue.component('ai-modal', {
-    props: ['visible', 'search_results'],
-    template: `
-    <div class="modal" v-if="visible" @click="close">
-        <div class="modal-content" @click="blockClose">
-            <span class="close" @click="close">&times;</span>
-            <h2>Search By AI</h2>
-            <br>
-            <input type=text placeholder="enter query" id=search-query>
-            <button @click="search">search</button>
-            <div>
-                <br>
-                <div class="card search-card" v-for="event in search_results" @click="show(event)">
-                    <p>{{ event.name }}</p>
-                    <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
-                    <p v-bind:style="'color:'+schedule.config['colors']['dorms'][event.dorm[0]]">{{ event.dorm[0] }}</p>
-                    <div>
-                        <div v-for="tag in event.tags" class="tag" :style="'background-color:'+schedule.config['colors']['tags'][tag]">{{ tag }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>`,
-    methods: {
-        close: function() {
-            this.visible = false;
-        },
-        blockClose: function(event) {
-            event.stopPropagation();
-        },
-        search: function() {
-            //this.search_results = schedule.events_all.slice(0, 5);
-            fetch(
-                AI_API + "/search",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    body: JSON.stringify({
-                        "query": document.getElementById("search-query").value
-                    })
-                }
-            ).then(response => response.json()).then(data => {
-                console.log(data);
-                this.search_results = [];
-                for (let e of data["results"]) {
-                    this.search_results.push(makeEvent(e, schedule.config));
-                }
-                this.$forceUpdate();
-            });
-        }
-    }
-});
-
 new Vue({
     el: "#ai-button",
     methods: {
@@ -351,6 +280,54 @@ ai = new Vue({
     el: "#ai",
     data: {
         visible: false,
-        search_results: []
+        search_results: [],
+        processing: false
     },
+    methods: {
+        search: function() {
+            //this.search_results = schedule.events_all.slice(0, 5);
+            this.processing = true;
+            this.search_results = [];
+            fetch(
+                AI_API + "/search",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    body: JSON.stringify({
+                        "query": document.getElementById("search-query").value
+                    })
+                }
+            ).then(response => response.json()).then(data => {
+                this.processing = false;
+                console.log(data);
+                this.search_results = [];
+                for (let e of data["results"]) {
+                    this.search_results.push(makeEvent(e, schedule.config));
+                }
+                this.$forceUpdate();
+            });
+        }
+    }
+});
+
+// About screen
+
+about = new Vue({
+    el: "#about",
+    data: {
+        visible: false
+    }
+});
+
+new Vue({
+    el: "#about-button",
+    methods: {
+        showAbout: function() {
+            about.visible = true;
+            about.$forceUpdate();
+        }
+    }
 });
