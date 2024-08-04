@@ -39,7 +39,7 @@
         <div class=ai-result-container>
             <br>
             <i v-if="processing">processing... the first query may take up to a minute as the AI server is starting up.</i>
-            <div class="card search-card" v-for="event in search_results" @click="show(event)">
+            <div class="card search-card" v-for="(event, i) in search_results" @click="show(event)" v-bind:style="'animation-delay:'+i/4+'s'">
                 <p>{{ event.name }}</p>
                 <p>{{ timeStr(event.start) }}-{{ timeStr(event.end) }}</p>
                 <p v-bind:style="'color:'+schedule.config['colors']['dorms'][event.dorm[0]]">{{ event.dorm[0] }}</p>
@@ -63,10 +63,10 @@
     </modal>
     <modal id="about" :visible="visible">
         <h2>about</h2>
-        <p>REXplorer v0.43</p>
+        <p>REXplorer v0.45</p>
         <p>by Jieruei Chang @knosmos</p>
         <p>
-            Next-gen AI-enhanced <span style="text-decoration: line-through;">Blockchain-integrated calendar</span> for MIT Residence
+            Next-gen AI-enhanced <span style="text-decoration: line-through;">Blockchain-integrated</span> calendar for MIT Residence
             Exploration 2024. Built with Vue.js, sentence-transformers, the MIT Dormcom REX API, and lots of janky code written at 1am.
         </p>
         <p>

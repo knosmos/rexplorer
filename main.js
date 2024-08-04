@@ -54,6 +54,10 @@ if ("starred" in localStorage) {
     starred = JSON.parse(localStorage.getItem("starred"));
 }
 
+fetch(AI_API).then(response => {
+    console.log("AI wakeup call successful");
+})
+
 function timeStr(date) {
     return date.toLocaleTimeString("en-us", {hour: "2-digit", minute: "2-digit"})
 }
@@ -142,8 +146,7 @@ let schedule = new Vue({
             this.config = data;
             this.events_all = makeEventObjects(data.events, this.config);
             this.tracks = makeSchedule(this.events_all);
-            console.log(this.tracks);
-            console.log(this.config);
+            console.log(this.events_all);
             timebar.make();
         });
     },
@@ -234,7 +237,6 @@ let timebar = new Vue({
                     "text": timeStr(new Date(i)),
                     "pos" : (i - rex_start) / (1000 * 60 * 60) * 100
                 });
-                console.log(this.times);
             }            
         }
     }
@@ -285,7 +287,6 @@ ai = new Vue({
     },
     methods: {
         search: function() {
-            //this.search_results = schedule.events_all.slice(0, 5);
             this.processing = true;
             this.search_results = [];
             fetch(
@@ -302,11 +303,11 @@ ai = new Vue({
                 }
             ).then(response => response.json()).then(data => {
                 this.processing = false;
-                console.log(data);
                 this.search_results = [];
                 for (let e of data["results"]) {
                     this.search_results.push(makeEvent(e, schedule.config));
                 }
+                console.log(this.search_results);
                 this.$forceUpdate();
             });
         }

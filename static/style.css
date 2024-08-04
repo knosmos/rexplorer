@@ -235,4 +235,19 @@ button:hover {
     box-shadow: none;
     filter: saturate(1.4);
     margin-bottom: 10px;
+    animation: flipUp 0.5s;
+    animation-fill-mode: backwards;
+}
+
+@keyframes flipUp {
+    0% {
+        transform: scaleY(0);
+    }
+    100% {
+        transform: scaleY(1);
+    }
+}
+
+#about a {
+    color: #120995;
 }
