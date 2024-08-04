@@ -69,8 +69,7 @@ function makeEvent(event, config) {
     let start_date = new Date(event.start);
     let end_date = new Date(event.end);
     
-    let rex_start = new Date(config.start) - 1000 * 60 * 60 * 12;
-    let rex_end = new Date(config.end);
+    let rex_start = new Date(config.start);
     let start_pos = (start_date - rex_start) / (1000 * 60 * 60) * 100;
     let width = (end_date - start_date) / (1000 * 60 * 60) * 100;
     return {
@@ -139,11 +138,17 @@ let schedule = new Vue({
     data: {
         tracks: [],
         config: {},
-        zoom: 1
+        zoom: 0.7
     },
     mounted() {
         fetch(API).then(response => response.json()).then(data => {
             this.config = data;
+
+            data.events.sort((a, b) => new Date(a.start) - new Date(b.start));
+            this.config.start = new Date(data.events[0].start).getTime() - 1000*60*60;
+            data.events.sort((a, b) => new Date(a.end) - new Date(b.end));
+            this.config.end = data.events[data.events.length - 1].end;
+
             this.events_all = makeEventObjects(data.events, this.config);
             this.tracks = makeSchedule(this.events_all);
             console.log(this.events_all);
@@ -226,18 +231,19 @@ let timebar = new Vue({
     el: "#timebar",
     data: {
         times:[],
-        zoom:1,
+        zoom:0.7,
     },
     methods: {
         make: function() {
-            let rex_start = new Date(schedule.config.start) - 1000 * 60 * 60 * 12;
-            let rex_end = new Date(schedule.config.end).getTime() + 1000 * 60 * 60 * 150;
-            for (let i=rex_start; i<rex_end; i+=1000*60*60) {
+            let rex_start = new Date(schedule.config.start).getTime();
+            let rex_end = new Date(schedule.config.end).getTime();
+            for (let i=rex_start; i<rex_end; i+=1000*60*60*2) {
                 this.times.push({
                     "text": timeStr(new Date(i)),
                     "pos" : (i - rex_start) / (1000 * 60 * 60) * 100
                 });
-            }            
+            }      
+            console.log(this.times);      
         }
     }
 });
